@@ -1,0 +1,76 @@
+syntax = "proto2";
+package grpc_service;
+
+message GetJsonReply {
+    required string result = 1;
+}
+
+message SubscribeReply {
+    required string result = 1;
+}
+
+message ConfigReply {
+    required string result = 1;
+}
+
+message ReportEvent {
+    required string token_id = 1;
+    required string stream_name = 2;
+    required string event_name = 3;
+    required string json_text = 4;
+}
+
+message GetReportRequest{
+    required string token_id = 1;
+}
+
+message LoginRequest {
+    required string user_name = 1;
+    required string password = 2;
+} 
+
+message LoginReply {
+    required string token_id = 1;
+}
+
+message LogoutRequest {
+    required string token_id = 1;
+}
+
+message LogoutReply {
+    required string result = 1;
+}
+
+message SubscribeRequest {
+    required string stream_name = 1;
+}
+message CliConfigArgs {
+    required int64 ReqId = 1;
+    required string cli = 2;
+}
+message CliConfigReply {
+    required int64 ResReqId = 1;
+    required string output = 2;
+    required string errors = 3;
+}
+message DisplayCmdArgs {
+    required int64 ReqId = 1;
+    required string cli = 2;
+}
+message DisplayCmdReply {
+    required int64 ResReqId =1;
+    required string output = 2;
+    required string errors = 3;
+}
+
+service GrpcService {
+    rpc Login (LoginRequest) returns (LoginReply) {}
+    rpc Logout (LogoutRequest) returns (LogoutReply) {}
+    rpc SubscribeByStreamName (SubscribeRequest) returns (SubscribeReply) {}
+    rpc GetEventReport (GetReportRequest) returns (stream ReportEvent) {}
+    rpc CliConfig (CliConfigArgs)  returns (stream CliConfigReply) {}
+    rpc DisplayCmdTextOutput(DisplayCmdArgs)  returns(stream DisplayCmdReply) {}
+}
+
+
+
