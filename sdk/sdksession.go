@@ -10,19 +10,6 @@ import (
 	"time"
 )
 
-// type GrpcClient interface {
-// 	Close()
-// 	AddUnicastRoute(m map[string]MapValueIntface)
-// 	AddUnicastRouteV6(m map[string]MapValueIntface)
-// 	AddUnicastRoutes(ms []map[string]MapValueIntface)
-// 	AddUnicastRoutesV6(ms []map[string]MapValueIntface)
-// 	DelUnicastRoute(delRoute map[string]string)
-// 	DelUnicastRoutes(delRoutes []map[string]string)
-// 	DelUnicastRouteV6(delRoute map[string]string)
-// 	DelUnicastRoutesV6(delRoutes []map[string]string)
-// 	GetDeviceInfo() string
-// }
-
 type GrpcSession struct {
 	Client h3c.GrpcServiceClient
 	Conn   *grpc.ClientConn
