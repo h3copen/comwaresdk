@@ -5,18 +5,20 @@ This module is used for grpc connection with H3C devices.
 
 ### grpc_service
 ---
-grpc_service.proto — Defines the public RPC methods. In sdksessoin, we just used two methods：  
-service GrpcService {   // gRPC methods
+grpc_service.proto — Defines the public RPC methods. In sdksessoin, we just used two methods： 
 
-    rpc Login (LoginRequest) returns (LoginReply) {}    // Login method
+    service GrpcService {   // gRPC methods
 
-    rpc Logout (LogoutRequest) returns (LogoutReply) {}     // Logout method
+        rpc Login (LoginRequest) returns (LoginReply) {}    // Login method
 
-}
+        rpc Logout (LogoutRequest) returns (LogoutReply) {}     // Logout method
+
+    }
 
 ### sdksession
 ---
 Example usage:  
+
     var(
     address      string = "192.168.18.102"  
     port         uint = 50051  
