@@ -1,2 +1,2 @@
-# Comwaresdk
-Comwaresdk provides grpc methods connect to H3C device. Connecting to h3c requires user, password, ip address and port.
+# Comware SDK
+Comware SDK提供了访问H3C设备的一些编程接口。
