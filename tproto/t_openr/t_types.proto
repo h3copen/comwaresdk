@@ -1,0 +1,85 @@
+//---------------------------------------------------------------------
+// Copyright (c) 2018 by tencent.
+// All rights reserved.
+//---------------------------------------------------------------------
+
+// -----------------------release note---------------------------------
+// This file don't need version information, any changes will be represented
+// by "t_agent.proto" or "t_lsdb.proto" files.
+//---------------------------------------------------------------------
+
+syntax = "proto3";
+package t_openr;
+
+message TInitMsg {
+    // major version, 
+    uint32 majorVersion = 1;
+    // minor version
+    uint32 minorVersion = 2;
+}
+
+message TErrorStatus {
+    enum TErrno {
+        //general error codes.
+        
+        // No error occurs.
+        SUCCESS = 0x0;
+        // Unknown version.
+        UNKNOWN_VERSION = 0x1;
+        // Client is not connected.
+        NOT_CONNECTED = 0x2;
+        // Connection is in use.
+        ALREADY_INUSE = 0x3;
+        // Try again current operation.
+        TRY_OPS_AGAIN = 0x4;
+        // Service is not available.
+        NOT_AVAILABLE = 0x5;
+        // Wait for last request over.
+        BUSY = 0x6;
+        // Invalid parameters.
+        INVALID_PARAM = 0x7;
+        // Operation not supported.
+        NOT_SUPPORTED = 0x8;
+        // Operation timeout.
+        TIMEOUT = 0x9;
+        // Memory is unsufficient.
+        NO_MEMORY = 0xa;
+        // General Error.
+        GER_ERROR = 0xb;
+
+        // !!! Error codes for route operations.
+        ERR_ROUTE_OFFSET = 0x1000;
+        // add route failed
+        ERR_ROUTE_ADD    = 0x1001;
+        // update route failed
+        ERR_ROUTE_UPDT   = 0x1002;
+        // delete route failed
+        ERR_ROUTE_DEL    = 0x1003;
+    }
+    TErrno Status = 1;
+}
+
+// Object Operations.
+enum TObjectOp {
+    // Reserved.
+    OP_RESERVED_OBJ   = 0x0;
+    // Add.
+    OP_ADD_OBJ        = 0x1;
+    // Update.
+    OP_UPDATE_OBJ     = 0x2;
+    // Delete.
+    OP_DELETE_OBJ     = 0x3;
+    //End of Object
+    OP_END_OBJ = 0x4;
+}
+
+enum TAddrType {
+  T_UNSPEC = 0;
+  T_V4 = 1;
+  T_V6 = 2;
+}
+
+message TAddress {
+  TAddrType type = 1;
+  string address = 2;
+}

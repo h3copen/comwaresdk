@@ -1,0 +1,145 @@
+//---------------------------------------------------------------------
+// Copyright (c) 2018 by tencent.
+// All rights reserved.
+//---------------------------------------------------------------------
+
+// -----------------------release note---------------------------------
+// 1.0: initial version, jamesbjwang@tencent.com
+//
+//---------------------------------------------------------------------
+
+syntax = "proto3";
+package t_openr;
+
+import "t_types.proto";
+
+enum AgentVersion {
+  option allow_alias = true;
+  T_AGENT_VER_UNUSED = 0;
+  T_AGENT_VER_MAJOR = 1;
+  T_AGENT_VER_MINOR = 0;
+}
+
+service TAgentOper {
+
+    // this is the first grpc call, used for version check, etc.
+	rpc sendInitMsg(TInitMsg) returns (TErrorStatus);
+
+    // enable or disable to deliver openr packet to cpu 
+    rpc enableProtocolPacketToCPU (TPacketRule) returns (TErrorStatus);
+    
+    // get device info
+    rpc getDeviceInfo (TDeviceInfoReq) returns (TDeviceInfoRsp);
+    
+    // sync openr routes to device
+    rpc syncRoutes (stream TRouteMsg) returns (stream TRouteMsgRsp);
+}
+
+// Packet rule action level
+enum TActionLevel {
+    // Reserved
+    T_ACTION_RESERVED     = 0x0;
+    // Global level action
+    T_ACTION_GLOBAL       = 0x1;
+    // Interface level action
+    T_ACTION_INTERFACE    = 0x2;
+}
+
+// open/r packet rule
+message TPacketRule {
+    // for global or interface level enable
+    TActionLevel enLevel = 1;
+    
+    // interface name only for interface action level
+    string ifName = 2;
+    
+    // packet destination(FF02::1 or FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF)
+    TAddress dstAddress = 3;
+    
+    // protocol type (tcp : 6; udp : 17)
+    uint32 protoType = 4;
+    
+    // packet dest-port(tcp: 60001~60012; udp: 6666)
+    uint32 dstPort = 5;
+	
+	// true: enable(false: disable) the rule
+	bool enableRule = 6;
+}
+
+// device info type
+enum TDeviceInfoType {
+    // Reserved
+    T_DEV_INFO_RESERVED     = 0x0;
+    // vendor information
+    T_DEV_INFO_VENDOR_NAME  = 0x1;
+}
+
+// device info response message
+message TDeviceInfoReq {
+    // device info type
+    TDeviceInfoType enDevInfoType = 1;
+}
+
+// device info response message
+message TDeviceInfoRsp {
+    // device info type
+    TDeviceInfoType enDevInfoType = 1;
+    oneof oneDeviceInfo {
+        // device manufacture vendor information
+        string VendorName = 2;
+    }
+}
+
+// open/r unicast route path attribute
+message TRoutePath {
+    // Route's local outgoing interface
+    string localIfName = 1;
+    
+    // Route's nexthop address(ipv4 or ipv6)
+    TAddress nexthopAddress = 2;
+    
+    // Route's cost, Reserved field. Always 0. 
+    uint32 cost = 3;
+}
+
+// open/r unicast route
+message TUnicstRoute {
+    // Route's destination prefix address(ipv4 or ipv6)
+    TAddress prefixAddress = 1;
+    
+    // Route's prefix length
+    uint32 prefixLen = 2;
+    
+    // Route's preference value used by RIB. Default value is 30
+    uint32 preference = 3;
+    
+    // route path attribute
+    repeated TRoutePath path = 4;
+    
+}
+
+// open/r route message
+message TRouteMsg {
+    // Sequence of route. This can be used to indicate replies with requests.
+    // The gRPC server simply reflects this field back in the reply.
+    uint64 indexOfRouteMsg = 1;
+    
+    // Route operation type (add delte or update)
+    TObjectOp enOperType = 2;
+
+    // VRF name, not supported now. Reserved field.
+    string vrfName = 3;
+    
+    // list of unicast route
+    repeated TUnicstRoute route = 4;
+}
+
+// open/r route response message
+message TRouteMsgRsp {
+    // Sequence of route. This can be used to indicate replies with requests.
+    // The gRPC server simply reflects this field back in the reply.
+    uint64 indexOfRouteMsg = 1;
+
+    // VRF name, not supported now. Reserved field.
+    TErrorStatus errorStatus = 2;
+}
